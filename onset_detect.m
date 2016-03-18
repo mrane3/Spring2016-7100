@@ -1,6 +1,6 @@
 function onset_times = onset_detect(x, fs, windowSize, hopSize, minTime)
 
-ampThreshold = 0.05 ;
+ampThreshold = 0.0005 ;
 
 windowStart = 1 ;
 windowEnd = windowSize ;
@@ -84,33 +84,28 @@ for i = 2 : length(deviation)
         onset_times = [onset_times, index(i-1)] ;
     end
 end
-% length(onset_times)
-% onset_times = index(deviation > 0.3) ;
-% [~,locs] = findpeaks(deviation) ;
-% onset_times = index(locs) ;
+length(onset_times)
+onset_times = index(deviation > 0.3) ;
+[~,locs] = findpeaks(deviation) ;
+onset_times = index(locs) ;
 onset_times(onset_times < startTime) = [] ;
 diffOnsets = diff(onset_times) ;
 falseOnsets = find(diffOnsets < minTime*1.5*fs) ;
 onset_times(falseOnsets) = [] ;
-% deviation(falseOnsets) = [] ;
-% 
-% diffOnsets = diff(onset_times) ;
-% for i = 2 : length(diffOnsets) - 1
-%     if (
+ deviation(falseOnsets) = [] ;
 
-% diffOnsets = diff(onset_times) ;
-% onset_times(diffOnsets < minTime*1.5*fs) = [] ;
-% diffOnsets = diff(onset_times) ;
-% onset_times(diffOnsets < minTime*2*fs) = [] ;
+diffOnsets = diff(onset_times) ;
+for i = 2 : length(diffOnsets) - 1
+diffOnsets = diff(onset_times) ;
+onset_times(diffOnsets < minTime*1.5*fs) = [] ;
+diffOnsets = diff(onset_times) ;
+onset_times(diffOnsets < minTime*2*fs) = [] ;
+diffOnsets = diff(onset_times) ;
+end
 
-
-
-%     diffOnsets = diff(onset_times) ;
-% end
-% 
 figure ;
 plot(x) ;
 hold on
-plot(index, deviation, 'k') ;
+plot( deviation, 'k') ;
 plot(onset_times, zeros(1,length(onset_times)), 'ro') ;
 title('Detected Onsets') ;
